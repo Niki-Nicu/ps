@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Speaking Practice Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 1.875rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .setup-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        select, input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .quiz-screen {
+            display: none;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .question-badge {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-item {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            font-size: 1rem;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary);
+            background: #fdfdfd;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: #e0e7ff;
+            color: #312e81;
+            font-weight: 500;
+        }
+
+        .option-item.correct {
+            border-color: var(--success);
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .option-item.incorrect {
+            border-color: var(--error);
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .explanation {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--primary);
+            display: none;
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .results-screen h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .score-details {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Public Speaking Practice Hub</h1>
+            <p>Master all 120 NPTEL questions across Assignments 1 to 12</p>
+        </header>
+
+        <!-- SETUP SCREEN -->
+        <div id="setupScreen" class="setup-screen">
+            <div class="form-group">
+                <label for="assignmentSelect">Select Assignment</label>
+                <select id="assignmentSelect">
+                    <option value="all">🚀 All Assignments (All 120 Questions)</option>
+                    <option value="1">Assignment 1</option>
+                    <option value="2">Assignment 2</option>
+                    <option value="3">Assignment 3</option>
+                    <option value="4">Assignment 4</option>
+                    <option value="5">Assignment 5</option>
+                    <option value="6">Assignment 6</option>
+                    <option value="7">Assignment 7</option>
+                    <option value="8">Assignment 8</option>
+                    <option value="9">Assignment 9</option>
+                    <option value="10">Assignment 10</option>
+                    <option value="11">Assignment 11 (Image Assignment)</option>
+                    <option value="12">Assignment 12</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="modeSelect">Practice Mode</label>
+                <select id="modeSelect">
+                    <option value="practice">Practice Mode (Instant Feedback & Explanation)</option>
+                    <option value="exam">Exam Mode (Score at the end)</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="startQuiz()">Start Practicing</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quizScreen" class="quiz-screen">
+            <div class="quiz-header">
+                <span id="progressText">Question 1 of 10</span>
+                <span id="assignmentBadge" class="question-badge">Assignment 1</span>
+            </div>
+
+            <div id="questionContainer">
+                <div class="question-text" id="questionText">Loading question...</div>
+                <div id="answersContainer" class="options-list"></div>
+                <div id="explanationBox" class="explanation"></div>
+            </div>
+
+            <div class="quiz-footer">
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" style="display:none; margin-left: auto;">Next Question</button>
+            </div>
+        </div>
+
+        <!-- RESULTS SCREEN -->
+        <div id="resultsScreen" class="results-screen">
+            <h2>Practice Complete! 🎉</h2>
+            <div class="score-display" id="finalScore">8/10</div>
+            <div class="score-details" id="scoreMessage">Great job! Keep practicing to achieve perfection.</div>
+            <button class="btn" onclick="resetToSetup()">Try Again / Change Assignment</button>
+        </div>
+    </div>
+
+    <script>
+        const questionDatabase = {
+            1: [
+                { q: "\"Speech is power: speech is to persuade, to convert, to compel\" this quote belongs to:", type: "mcq", options: ["Abraham Lincoln", "Ralph Waldo Emerson", "Winston Churchill", "Aristotle"], answer: 1, exp: "Ralph Waldo Emerson famously noted the power of speech to persuade, convert, and compel." },
+                { q: "Aristotle was a famous scholar and author of Rhetoric. He belonged to:", type: "mcq", options: ["Rome", "Egypt", "Greece", "America"], answer: 2, exp: "Aristotle was a classical Greek philosopher and polymath." },
+                { q: "Public Speaking is:", type: "mcq", options: ["A rare skill used only in formal settings", "An activity limited to politicians and leaders", "Not an everyday routine for most people", "A part of everyday personal and professional life"], answer: 3, exp: "Public speaking is an integral part of everyday personal and professional communication." },
+                { q: "Lack of clarity in chosen words is called:", type: "mcq", options: ["Ambiguity", "Articulation", "Euphemism", "Verbosity"], answer: 0, exp: "Ambiguity refers to a lack of clarity or uncertainty in meaning." },
+                { q: "Deliberative Rhetoric is mainly used to:", type: "mcq", options: ["Judge actions of the past", "Praise or blame a person", "Discuss and decide future actions", "Analyse literary texts"], answer: 2, exp: "Deliberative rhetoric focuses on discussing future actions and policies." },
+                { q: "Fear of ______ is an interpersonal barrier.", type: "fib", options: ["motivation", "criticism", "decision", "deliberation"], answer: 1, exp: "Fear of criticism is a common psychological and interpersonal barrier." },
+                { q: "According to ______ Dictionary, Public Speaking is 'the act or process of making speeches in public' or 'the art of effective oral communication with the audience'.", type: "fib", options: ["Merriam Webster", "Oxford", "Cambridge", "Blackwell"], answer: 0, exp: "Merriam-Webster provides this standard definition." },
+                { q: "\"As I Walked Out One Evening\" is a poem by ______.", type: "fib", options: ["John Donne", "Stuart Mill", "Wilfred Owen", "W.H. Auden"], answer: 3, exp: "W.H. Auden wrote 'As I Walked Out One Evening'." },
+                { q: "Hearing is a ______ process.", type: "fib", options: ["psychological", "physiological", "emotional", "factual"], answer: 1, exp: "Hearing is a physiological process involving sound wave reception, whereas listening is psychological." },
+                { q: "Ethics is commonly interchanged with ______.", type: "fib", options: ["seniority", "obesity", "rhetoric", "morality"], answer: 3, exp: "Ethics and morality are frequently used interchangeably." }
+            ],
+            2: [
+                { q: "Which of the following is NOT listed as a factor to analyse about an audience?", type: "mcq", options: ["Size of the audience", "Demographics (age, sex, background)", "Audience members' favorite foods", "Setting and seating arrangement"], answer: 2, exp: "Favorite foods are irrelevant to audience analysis in public speaking." },
+                { q: "The ______ audiences are those that seeks entertainment and connection through communication.", type: "mcq", options: ["Emotive", "Directive", "Reflective", "Supportive"], answer: 0, exp: "Emotive audiences seek connection and emotional engagement." },
+                { q: "The closing advice 'Know yourself and know your audience' implies:", type: "mcq", options: ["Only focus on audience preferences and ignore your strengths", "Self-awareness combined with audience knowledge leads to more effective communication", "If you know yourself, audience analysis is unnecessary", "Always prioritize entertainers over informative content"], answer: 1, exp: "Effective communication hinges on both self-awareness and understanding your listeners." },
+                { q: "Monroe's motivated sequence, begins with ______ step.", type: "mcq", options: ["Call to action", "Grab the attention", "Provide visual solutions", "Define the conclusion"], answer: 1, exp: "Monroe's motivated sequence starts with grabbing attention." },
+                { q: "The ______ as a technological tool allows newsreaders to appear spontaneous while actually being aided.", type: "mcq", options: ["Presentation timer", "Teleprompter", "Interactive whiteboard", "Podcast platform"], answer: 1, exp: "A teleprompter displays text while allowing the speaker to look directly at the camera." },
+                { q: "Relevance theory was first proposed by H. P. Grice.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. Relevance Theory was proposed by Dan Sperber and Deirdre Wilson." },
+                { q: "According to Sperber and Wilson's Relevance Theory, communication is successful when a speaker minimizes the audience's ______", type: "mcq", options: ["Cognitive effect", "Feedback loop", "Processing effort", "Vocal variety"], answer: 2, exp: "Relevance theory posits that communication maximizes cognitive effect while minimizing processing effort." },
+                { q: "Eloquence is a perennially valued skill that can help individuals survive crises and gain social recognition.", type: "tf", options: ["True", "False"], answer: 0, exp: "True. Eloquence is a powerful lifelong communication asset." },
+                { q: "Public speaking cannot contribute to professional advancement or leadership opportunities", type: "tf", options: ["True", "False"], answer: 1, exp: "False. Public speaking is vital for professional growth and leadership." },
+                { q: "In public speaking, the 'Chronological Pattern' organizes the subtopics and main points based on physical space, geographical direction, or physical layout from left to right.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. Spatial pattern uses physical space; chronological pattern uses time." }
+            ],
+            3: [
+                { q: "The fear of speaking before an audience is commonly known as ______.", type: "fib", options: ["glossophobia", "agoraphobia"], answer: 0, exp: "Glossophobia is the specific term for speech anxiety." },
+                { q: "According to Vygotsky, ______ plays a significant role in shaping human understanding of reality.", type: "fib", options: ["language", "genetics"], answer: 0, exp: "Vygotsky emphasized language and social interaction in cognitive development." },
+                { q: "Goleman's Emotional Competence Framework broadly includes personal and ______ competencies.", type: "fib", options: ["psychological", "social"], answer: 1, exp: "Daniel Goleman's framework includes personal and social competencies." },
+                { q: "Cultures that rely heavily on implicit messages and non-verbal cues are called ______ cultures.", type: "fib", options: ["high-context", "low-context"], answer: 0, exp: "High-context cultures rely heavily on implicit communication and context." },
+                { q: "The hormone associated with the body's stress response during speech anxiety is ______.", type: "fib", options: ["epinephrine", "adrenaline"], answer: 0, exp: "Both epinephrine and adrenaline are accepted options." },
+                { q: "Which of the following is NOT a component of anxiety?", type: "mcq", options: ["A. Cognitive component", "B. Somatic component", "C. Behavioural component", "D. Linguistic component"], answer: 3, exp: "Linguistic component is not a standard component of anxiety." },
+                { q: "Deardorff's model of intercultural competence consists of how many elements?", type: "mcq", options: ["Three", "Four", "Five", "Six"], answer: 1, exp: "Deardorff's model has four key stages/elements." },
+                { q: "According to Mulac and Sherman, which of the following is among the elements of speech fright?", type: "mcq", options: ["A. Dysfluency", "B. Adaptation", "C. Persuasion", "D. Observation"], answer: 0, exp: "Dysfluency is a noted manifestation of speech anxiety." },
+                { q: "Intercultural communication, according to Martin and Nakayama, is best described as:", type: "mcq", options: ["A. A one-way transfer of information", "B. An interactive experience between different cultures", "C. A method for cultural standardization", "D. A process of eliminating cultural differences"], answer: 1, exp: "It is an interactive experience between different cultures." },
+                { q: "Which of the following theorists is associated with the concept of Cultural Intelligence?", type: "mcq", options: ["A. Lev Vygotsky", "B. Geert Hofstede", "C. Christopher Earley and Soon Ang", "D. Daniel Goleman"], answer: 2, exp: "Christopher Earley and Soon Ang developed Cultural Intelligence (CQ)." }
+            ],
+            4: [
+                { q: "______ is the currency of persuasion.", type: "fib", options: ["Agitation", "Affection", "Attention", "Falsification"], answer: 2, exp: "Attention is often called the currency of persuasion." },
+                { q: "______ is a way to grab attention and refresh the audience.", type: "fib", options: ["Divulsion", "Digression", "Disgrace", "Diabolical"], answer: 1, exp: "Digression allows speakers to deviate temporarily to re-engage interest." },
+                { q: "______ have always been a site of persuasion.", type: "fib", options: ["Stages", "Solitude", "Annoyance", "Aggression"], answer: 0, exp: "Stages are traditional platforms for persuasive performance." },
+                { q: "______ criticism is a component of classroom teaching-learning process.", type: "fib", options: ["Healthy", "Harsh", "Heroic", "Hermeneutic"], answer: 0, exp: "Healthy criticism supports constructive learning." },
+                { q: "John Dewey was an ______ educator and philosopher.", type: "fib", options: ["Austrian", "Belgian", "British", "American"], answer: 3, exp: "John Dewey was a leading American philosopher and educational reformer." },
+                { q: "Digression is employed by the speaker for", type: "mcq", options: ["a. surprise effect", "b. nuisance", "c. continuous repetition", "d. jargon usage"], answer: 0, exp: "Digression can create surprise or a refreshing shift in perspective." },
+                { q: "Which among the following options is not a type of dramatic speech?", type: "mcq", options: ["a. Soliloquy", "b. Aside", "c. Silence", "d. Monologue"], answer: 2, exp: "Silence is not a type of dramatic speech." },
+                { q: "Dramatic Monologue has been used by:", type: "mcq", options: ["a. Toru Dutt", "b. Lord Byron", "c. William Shakespeare", "d. Robert Browning"], answer: 3, exp: "Robert Browning is a master of the dramatic monologue." },
+                { q: "The basic principle of the classroom comprises ______ and democracy.", type: "mcq", options: ["a. equity", "b. equality", "c. quality", "d. quantity"], answer: 1, exp: "Equality and democracy form foundational classroom principles." },
+                { q: "Teaching has to be", type: "mcq", options: ["a. provocational", "b. unidirectional", "c. authoritative", "d. participatory"], answer: 3, exp: "Modern pedagogy emphasizes participatory teaching." }
+            ],
+            5: [
+                { q: "The use of multimedia aids helps to maintain students' attention.", type: "tf", options: ["True", "False"], answer: 0, exp: "True. Multimedia maintains engagement." },
+                { q: "______ aims to study the body language as a type of non-verbal human communication.", type: "mcq", options: ["Visual aid", "Chalkboard", "Kinesics", "Notepad"], answer: 2, exp: "Kinesics is the study of body movement and gestures." },
+                { q: "\"It is not space that is the hidden dimension of human communication, but it is time that is hidden...\" This statement was given by", type: "mcq", options: ["Thomas Bruneau", "Ray Birdwhistell", "Abraham Lincoln", "Soren Kierkegaard"], answer: 0, exp: "Thomas Bruneau is a pioneer in chronemics." },
+                { q: "______ are considered to be physical manifestations of one's emotions.", type: "mcq", options: ["Yoga", "Bhakti", "Dharma", "Rasas"], answer: 3, exp: "Rasas in Indian aesthetics represent aesthetic emotional flavors." },
+                { q: "Which book by body language experts Allan and Barbara Pease illustrates different types of handshakes and their function?", type: "mcq", options: ["The Definitive Book of Body Language", "On Writing: A Memoir of the Craft", "The Elements of Style", "The Hidden Dimension"], answer: 0, exp: "'The Definitive Book of Body Language' details handshake types." },
+                { q: "Which of the following is not a type of handshake according to Allan and Barbara Pease?", type: "mcq", options: ["The Wet Fish", "Octopus Grip", "The Bone-Crusher", "The Stiff-Arm Thrust"], answer: 1, exp: "Octopus Grip is not an official category in their book." },
+                { q: "Enhanced perception of spaces leads to increased output in communication.", type: "tf", options: ["True", "False"], answer: 0, exp: "True. Good spatial awareness aids effective interaction." },
+                { q: "______ includes our bodily understanding of time to carry out our diurnals at regular intervals.", type: "mcq", options: ["Social Time", "Cultural Time", "Psychological Time", "Biological Time"], answer: 3, exp: "Biological time governs bodily rhythms." },
+                { q: "Who defines proxemics as 'the interrelated observations and theories of man's use of space as a specialized elaboration of culture'?", type: "mcq", options: ["Sigmund Freud", "Amy Cuddy", "Edward T. Hall", "Christopher Turk"], answer: 2, exp: "Edward T. Hall coined and defined proxemics." },
+                { q: "Who introduced the term 'speech chronemics'?", type: "mcq", options: ["H. P. Krüger", "Jones and Yarbrough", "Max Dressoir", "John Keats"], answer: 0, exp: "H. P. Krüger introduced speech chronemics." }
+            ],
+            6: [
+                { q: "Deductive reasoning proceeds from a general principle to a specific conclusion.", type: "tf", options: ["True", "False"], answer: 0, exp: "True. Deductive reasoning goes from general to specific." },
+                { q: "Meta-communication refers exclusively to communication about language used in literary texts.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. Meta-communication is communication about communication itself." },
+                { q: "Hoarseness occurs due to the passage of excess air through the vocal cords during articulation.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "Pitch is determined by the frequency of vocal cord vibrations.", type: "tf", options: ["True", "False"], answer: 0, exp: "True. Higher frequency means higher pitch." },
+                { q: "The International Phonetic Alphabet (IPA) is primarily used for grammatical analysis.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. IPA is used for phonetic representation." },
+                { q: "Which of the following is a type of conversation identified by Adler?", type: "mcq", options: ["A. Political", "B. Practical", "C. Persuasive", "D. Narrative"], answer: 1, exp: "Practical conversations are identified by Adler." },
+                { q: "The study of graphemes and writing systems is known as:", type: "mcq", options: ["A. Graphology", "B. Graphonomics", "C. Graphemics", "D. Phonemics"], answer: 2, exp: "Graphemics studies writing systems and graphemes." },
+                { q: "The negotiation outcome termed as BATNA refers to:", type: "mcq", options: ["A. Basic Agreement Through Negotiated Action", "B. Best Alternative to a Negotiated Agreement", "C. Balanced Approach Towards Negotiated Arrangements", "D. Bilateral Agreement Through National Arbitration"], answer: 1, exp: "BATNA stands for Best Alternative to a Negotiated Agreement." },
+                { q: "Who is the author of the book Pragmatics of Human Communication?", type: "mcq", options: ["A. George Yule", "B. Gregory Bateson", "C. Noam Chomsky", "D. Paul Watzlawick"], answer: 3, exp: "Paul Watzlawick co-authored 'Pragmatics of Human Communication'." },
+                { q: "In English intonation, which pair of tones is commonly observed?", type: "mcq", options: ["A. Linear and Circular", "B. High and Low", "C. Rising and Falling", "D. Open and Closed"], answer: 2, exp: "Rising and falling tones are primary in English intonation." }
+            ],
+            7: [
+                { q: "Elocution is derived from the Latin word", type: "mcq", options: ["a. electra", "b. elocutio", "c. election", "d. escalation"], answer: 1, exp: "Elocution comes from Latin 'elocutio'." },
+                { q: "The correct pronunciation of words is called", type: "mcq", options: ["a. Orthoepy", "b. Orcoepy", "c. Onacology", "d. Osmalogy"], answer: 0, exp: "Orthoepy is the study of correct pronunciation." },
+                { q: "According to Lukas, the three general criteria for judging speech are accuracy, ______, and audience's interest.", type: "mcq", options: ["a) correspondence", "b) control", "c) chaos", "d) clarity"], answer: 3, exp: "Clarity is a core criterion." },
+                { q: "Debate is a ______ communication.", type: "mcq", options: ["a. unilateral", "b. bilateral", "c. unidirectional", "d. multidirectional"], answer: 3, exp: "Debate involves multiple interacting parties (multidirectional)." },
+                { q: "A positive tone while remembering the deceased is appreciated in ______ speeches.", type: "mcq", options: ["a. chaotic", "b. fanatic", "c. commemorative", "d. superlative"], answer: 2, exp: "Commemorative speeches honor the deceased." },
+                { q: "Prefixes are generally accented.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "Falling tone signals the completion of a statement.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "Group discussion is a competitive platform.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. GD evaluates collaborative communication." },
+                { q: "Compound Rising is used to convey a warning (antithesis to interrogation).", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "Manner is the native unquarried rock, whereas matter is the tool to transform it into 'a sculptured palace'.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." }
+            ],
+            8: [
+                { q: "______ humour is used to enhance one's relationships with others.", type: "mcq", options: ["a. Affiliative", "b. Self-enhancing", "c. Aggressive", "d. Self-defeating"], answer: 0, exp: "Affiliative humor brings people together positively." },
+                { q: "The senses of humour were held to be the four primary fluids. Which of the following was not considered one of the primary fluids?", type: "mcq", options: ["a. Yellow bile", "b. Black bile", "c. Phlegm", "d. Tar"], answer: 3, exp: "Tar is not one of the historical four humors." },
+                { q: "The word 'interview' originates from the French word '______' meaning 'to see each other.'", type: "mcq", options: ["a. Intervue", "b. Entrevoir", "c. Intervis", "d. Intervenor"], answer: 1, exp: "Entrevoir means to glimpse or see each other." },
+                { q: "Which of the following is not a purpose-based interview?", type: "mcq", options: ["a. Job interview", "b. Structured interview", "c. Clinical interview", "d. Research interview"], answer: 1, exp: "Structured refers to format, not purpose." },
+                { q: "Unlike panel interviews, group interviews include multiple interviewees to be interviewed simultaneously at the same time.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "According to Renaissance physiological theory, the human body held a balance of four liquids or humours.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "Laddering technique follows the ______ theory, which suggests that people's attributes determine their consumer choices...", type: "mcq", options: ["a. Howard-Sheth Model", "b. Elaboration Likelihood Model", "c. Means-End Chain", "d. Service-Dominant Logic"], answer: 2, exp: "Means-End Chain theory links attributes to values." },
+                { q: "Which of the following is not a criterion for categorization of interviews?", type: "mcq", options: ["a. Purpose", "b. Economic class", "c. Structure", "d. Medium"], answer: 1, exp: "Economic class is not a categorization criterion." },
+                { q: "Semi-structured interview offers both the objective value of a structured interview approach and the subjective quality of an unstructured.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "Who suggests that laddering technique as an interview method in focus group interview 'thrives on [questions like] why and how the product matters'?", type: "mcq", options: ["a. Prof. Michael Hawley", "b. Jeffrey G. Allen", "c. Andrea Fontana", "d. Walter Bingham"], answer: 0, exp: "Prof. Michael Hawley." }
+            ],
+            9: [
+                { q: "The official written record of the proceedings and decisions of a meeting is known as the ______.", type: "fib", options: ["minutes", "agenda"], answer: 0, exp: "Minutes are the official written records." },
+                { q: "The leadership style characterized by extensive delegation of authority is known as ______ leadership.", type: "fib", options: ["transactional", "laissez-faire"], answer: 1, exp: "Laissez-faire leadership involves high delegation." },
+                { q: "The Situational Leadership Theory was developed by Paul Hersey and ______.", type: "fib", options: ["Ken Blanchard", "Marcus Kotter"], answer: 0, exp: "Paul Hersey and Ken Blanchard developed Situational Leadership." },
+                { q: "Questions that seek personal opinions, experiences, and subjective responses are called ______ questions.", type: "fib", options: ["open-ended", "closed-ended"], answer: 0, exp: "Open-ended questions invite subjective answers." },
+                { q: "A conference organized to resolve disputes and end hostilities between nations is called a ______ conference.", type: "fib", options: ["settlement", "peace"], answer: 1, exp: "A peace conference resolves international conflicts." },
+                { q: "Which of the following is most closely associated with Impression Management in communicative interactions?", type: "mcq", options: ["A. Self-promotion and positive relationship building", "B. Technical skill assessment only", "C. Avoidance of self-description", "D. Limiting communication with the interviewer"], answer: 0, exp: "Impression management involves self-promotion." },
+                { q: "Which of the following documents is prepared before a meeting takes place?", type: "mcq", options: ["A. Minutes", "B. Anticipation", "C. Agenda", "D. Memorandum"], answer: 2, exp: "An agenda outlines meeting topics beforehand." },
+                { q: "Which of the following is most closely associated with Transactional Leadership style?", type: "mcq", options: ["A. Shared vision", "B. Rewards and punishments", "C. Delegation without supervision", "D. Participative decision-making"], answer: 1, exp: "Transactional leadership relies on rewards and punishments." },
+                { q: "Virtual conferences are considered advantageous because they:", type: "mcq", options: ["A. Eliminate the need for technology", "B. Overcome geographical barriers", "C. Guarantee audience participation", "D. Remove communication challenges"], answer: 1, exp: "Virtual conferences bridge geographic distances." },
+                { q: "Which of the following is an essential characteristic of an unconference?", type: "mcq", options: ["A. Strict adherence to a formal structure", "B. Heavy dependence on written proceedings", "C. Flexible and less formal organization", "D. Judicial decision-making authority"], answer: 2, exp: "Unconferences feature flexible, less formal organization." }
+            ],
+            10: [
+                { q: "A leader is a forceful and ______ personality.", type: "mcq", options: ["a. dynamic", "b. dubious", "c. timid", "d. tiresome"], answer: 0, exp: "Dynamic leadership is energetic and forceful." },
+                { q: "Audio-visual aids are also known as ______ material.", type: "mcq", options: ["a. passive", "b. instructional", "c. institutional", "d. suggestive"], answer: 1, exp: "Instructional aids include audio-visual tools." },
+                { q: "Who among the following is not an author of The Essentials of Leadership in Government?", type: "mcq", options: ["a. Darryl Plecas", "b. Colette Squires", "c. Len Garis", "d. Lincoln Myers"], answer: 3, exp: "Lincoln Myers is not among the authors." },
+                { q: "Which among these is not a basic type of listening:", type: "mcq", options: ["a. Active listening", "b. Inactive listening", "c. Divisive listening", "d. Selective listening"], answer: 2, exp: "Divisive listening is not recognized." },
+                { q: "Which quality of voice is understood as the pectoral:", type: "mcq", options: ["Low-pitched and slow", "Round and full", "The natural human voice", "Explosive resonance in the throat"], answer: 0, exp: "Pectoral voice quality is low-pitched and slow." },
+                { q: "Innovative is one of the behavioural attributes of the BASICS model.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "According to Simon Ortis, 'The only person who likes change is a baby with a wet diaper.'", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "Blackboard is an example of an audio aid in public speaking.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. A blackboard is visual." },
+                { q: "Arbitrary is a word or phrase that connects the ideas of a speech and indicates the relationship between them.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "Audience awareness is an essential component of pre-presentation preparation.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." }
+            ],
+            11: [
+                { q: "The six C's of language discussed are clarity, colour, concreteness, correctness, conciseness, and cultural sensitivity.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. Colour is not one of the six Cs." },
+                { q: "Jargon, euphemism, and Newspeak are elements that help bring clarity to public speaking.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "Christopher Turk's seven levers of persuasion are offered as tools to help speakers overcome anxiety and win over critics.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "Critical thinking and creative thinking are identical and interchangeable.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "George Yule, in his book The Study of Language, discusses the significance of linguistic context, also termed in speech:", type: "mcq", options: ["Co-text", "Syntax"], answer: 0, exp: "Co-text refers to linguistic context." },
+                { q: "Deictic Expressions refer to those bits of language which can be understood or interpreted only when the listener knows the ______ of the speaker.", type: "mcq", options: ["immediate context; especially the physical context", "presupposition"], answer: 0, exp: "Deixis relies on physical context." },
+                { q: "The chief objective of a workshop is to add to the expertise of every participant by ______.", type: "mcq", options: ["practical work and training for new products, policies, or ideas", "by providing formal academic certification without practical activities"], answer: 0, exp: "Workshops focus on practical training." },
+                { q: "According to McCrae and Costa's Five-Factor model's the personality trait of ______ is most highly correlated with creative thinking.", type: "mcq", options: ["Agreeableness", "Openness to experience"], answer: 1, exp: "Openness to experience correlates with creativity." },
+                { q: "Who propounded the linguistic relativity hypothesis?", type: "mcq", options: ["Aristotle and Descartes", "Sapir and Benjamin Lee Whorf", "Roman Jacobson and S.I. Hayakawa", "Michael Osborne and Roy Peter Clark"], answer: 1, exp: "Sapir and Benjamin Lee Whorf propounded linguistic relativity." },
+                { q: "According to the lecture, which two components must creative thinking satisfy for ideas to be valuable?", type: "mcq", options: ["Originality and popularity", "Originality and functionality", "Functionality and simplicity", "Simplicity and popularity"], answer: 1, exp: "Creative ideas must be original and functional." }
+            ],
+            12: [
+                { q: "In a group interview, displaying individuality over team spirit is ideal when describing how colleagues perceive you.", type: "tf", options: ["True", "False"], answer: 1, exp: "False. Teamwork is valued." },
+                { q: "Advertising on social media should adhere to censorship procedures to maintain decorum in online interactions.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "The primary purpose of time stamping on social media is to identify the user who created the post.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "When discussing weaknesses in an interview, the candidate should present them as significant flaws.", type: "tf", options: ["True", "False"], answer: 1, exp: "False." },
+                { q: "Privacy concerns in online communication arise due to the potential exposure of personal information on social media.", type: "tf", options: ["True", "False"], answer: 0, exp: "True." },
+                { q: "Which of the following best describes the role of the 'digital divide' in modern communication?", type: "mcq", options: ["A) It separates online and offline advertisements", "B) It refers to the gap created by unequal access to technology and the Internet", "C) It defines the boundary between social media and news media", "D) It describes the time difference between posting and receiving content online"], answer: 1, exp: "The digital divide refers to the gap in technology access." },
+                { q: "Among the five determining factors of the digital divide, which of the following is NOT one of them?", type: "mcq", options: ["A) Availability", "B) Affordability", "C) Appearance", "D) Acceptability"], answer: 2, exp: "Appearance is not a factor." },
+                { q: "In the STAR technique for situational interview responses, what does the letter 'S' stand for?", type: "mcq", options: ["A) Summary", "B) Situation", "C) Strength", "D) Skill"], answer: 1, exp: "S stands for Situation." },
+                { q: "Which interview format involves one interviewee being assessed by multiple interviewers simultaneously?", type: "mcq", options: ["A) Group Interview", "B) Telephonic Interview", "C) Panel Interview", "D) Sectional Interview"], answer: 2, exp: "A panel interview features multiple interviewers." },
+                { q: "Which famous speech was delivered by Swami Vivekananda in 1893 at the World's Parliament of Religions, introducing Hinduism, Vedanta, and Yoga to the Western world?", type: "mcq", options: ["A) The Gettysburg Address", "B) The Tilbury Speech", "C) 'I Have a Dream' Speech", "D) The Chicago Address"], answer: 3, exp: "Swami Vivekananda delivered the Chicago Address." }
+            ]
+        };
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let practiceMode = 'practice';
+
+        function startQuiz() {
+            try {
+                const assignmentVal = document.getElementById('assignmentSelect').value;
+                practiceMode = document.getElementById('modeSelect').value;
+
+                if (assignmentVal === 'all') {
+                    currentQuestions = [];
+                    for (let key in questionDatabase) {
+                        currentQuestions = currentQuestions.concat(questionDatabase[key].map(q => ({...q, sourceAssignment: key})));
+                    }
+                } else {
+                    if (!questionDatabase[assignmentVal]) {
+                        alert("Please select a valid assignment.");
+                        return;
+                    }
+                    currentQuestions = questionDatabase[assignmentVal].map(q => ({...q, sourceAssignment: assignmentVal}));
+                }
+
+                currentQuestions.sort(() => Math.random() - 0.5);
+                currentIndex = 0;
+                score = 0;
+
+                document.getElementById('setupScreen').style.display = 'none';
+                document.getElementById('resultsScreen').style.display = 'none';
+                document.getElementById('quizScreen').style.display = 'block';
+
+                loadQuestion();
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred while starting the quiz. Please check console.");
+            }
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('progressText').innerText = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
+            document.getElementById('assignmentBadge').innerText = `Assignment ${q.sourceAssignment}`;
+            document.getElementById('questionText').innerText = q.q;
+
+            const answersContainer = document.getElementById('answersContainer');
+            answersContainer.innerHTML = '';
+            document.getElementById('explanationBox').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+
+            q.options.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                div.className = 'option-item';
+                div.innerText = opt;
+                div.onclick = () => selectAnswer(idx);
+                answersContainer.appendChild(div);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const q = currentQuestions[currentIndex];
+            const options = document.querySelectorAll('.option-item');
+
+            options.forEach(opt => opt.onclick = null);
+
+            if (practiceMode === 'practice') {
+                options.forEach((opt, idx) => {
+                    if (idx === q.answer) {
+                        opt.classList.add('correct');
+                    }
+                    if (idx === selectedIndex && idx !== q.answer) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                const expBox = document.getElementById('explanationBox');
+                expBox.innerText = `Explanation: ${q.exp}`;
+                expBox.style.display = 'block';
+            } else {
+                options.forEach((opt, idx) => {
+                    if (idx === selectedIndex) {
+                        opt.classList.add('selected');
+                    }
+                });
+            }
+
+            if (selectedIndex === q.answer) {
+                score++;
+            }
+
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+
+            document.getElementById('finalScore').innerText = `${score} / ${currentQuestions.length}`;
+            
+            const percentage = (score / currentQuestions.length) * 100;
+            let msg = "Great effort! Practice again to master all concepts.";
+            if (percentage === 100) {
+                msg = "Outstanding! You got a perfect score! You are fully prepared.";
+            } else if (percentage >= 80) {
+                msg = "Fantastic job! You have a strong grasp of the material.";
+            }
+            document.getElementById('scoreMessage').innerText = msg;
+        }
+
+        function resetToSetup() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('setupScreen').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
